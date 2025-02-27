@@ -1,0 +1,104 @@
+/* Reset styling */
+body, html {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  overflow-x: hidden;
+}
+
+.navbar-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100px;
+  background-color: #000;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 0;
+  z-index: 999;
+}
+
+.navbar-logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.navbar-toggle {
+  cursor: pointer;
+  font-size: 1.5rem;
+  color: #fff;
+}
+
+.navbar-address {
+  font-size: 0.8rem;
+  text-align: center;
+  padding: 10px;
+  writing-mode: vertical-rl; /* Display text vertically */
+  transform: rotate(180deg); /* Optional: Flip text for readability */
+  line-height: 1.2;
+}
+
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 100px;
+  height: 100%;
+  width: 93%;
+  background-color: #1c1c1c;
+  color: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  transform: translateX(0);
+  transition: transform 0.3s ease-in-out;
+}
+
+.sidebar-header {
+  display: flex;
+  justify-content: flex-end;
+  padding: 10px;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 2rem;
+  cursor: pointer;
+}
+
+.sidebar-content ul {
+  list-style: none;
+  padding: 20px;
+}
+
+.sidebar-content ul li {
+  margin: 20px 0;
+  cursor: pointer;
+}
+
+.sidebar-content ul li:hover {
+  color: #ff9800;
+}
+
+.sidebar-footer {
+  margin-top: 20px;
+  font-size: 0.9rem;
+  text-align: center;
+  padding: 10px;
+  border-top: 1px solid #444;
+}
+
+.sidebar-footer p {
+  margin: 0;
+}
+
+/* Animation for hiding the sidebar */
+.sidebar-closed {
+  transform: translateX(-100%);
+}

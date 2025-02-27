@@ -1,0 +1,29 @@
+.easylist-container {
+    width: 100%;
+    background-color: rgb(255, 195, 117);
+    height: 50px; /* Set the desired height */
+    display: flex; /* Aligns items within */
+    align-items: center; /* Centers the items vertically */
+    padding: 0 20px; /* Adds equal spacing on the left and right sides */
+    box-sizing: border-box; /* Ensures padding doesn't affect width */
+}
+
+.easylist {
+    width: 100%;
+    margin: auto; /* Centers the content horizontally */
+}
+
+.easylist ul {
+    display: flex;
+    list-style: none; /* Removes bullet points from list items */
+    gap: 45px;
+    justify-content: center; /* Centers the list horizontally */
+    padding: 0;
+    margin: 0;
+}
+
+.easylist li a {
+    text-decoration: none; /* Removes underline */
+    color: inherit; /* Inherits text color from the parent */
+    cursor: pointer; /* Ensures pointer cursor on hover */
+}

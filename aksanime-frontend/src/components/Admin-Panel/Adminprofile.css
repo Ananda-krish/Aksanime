@@ -1,0 +1,131 @@
+/* AdminProfile.css */
+
+/* General Container */
+.admin-profile-container {
+    font-family: 'Arial', sans-serif;
+    padding: 30px;
+    /* background-color: #f5f6f9; */
+    min-height: 100vh;
+  }
+  
+  /* Header Styling */
+  .admin-profile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+  }
+  
+  .admin-profile-header h1 {
+    font-size: 2rem;
+    color: #333;
+  }
+  
+  .admin-profile-info {
+    display: flex;
+    align-items: center;
+  }
+  
+  .admin-profile-details h2 {
+    font-size: 1.5rem;
+    margin-bottom: 5px;
+  }
+  
+  .admin-profile-details p {
+    color: #888;
+  }
+  
+  .admin-profile-actions button {
+    padding: 12px 20px;
+    margin-left: 15px;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+  }
+  
+  .admin-profile-actions button:hover {
+    background-color: #45a049;
+  }
+  
+  /* Dashboard Stats */
+  .admin-dashboard-stats {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 40px;
+  }
+  
+  .stat-card {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    flex: 1;
+    text-align: center;
+  }
+  
+  .stat-card h3 {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    color: #444;
+  }
+  
+  .stat-value {
+    font-size: 2rem;
+    color: #4caf50;
+    font-weight: bold;
+  }
+  
+  /* Charts */
+  .charts {
+    display: flex;
+    gap: 30px;
+    margin-bottom: 40px;
+  }
+  
+  .chart-container {
+    flex: 1;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .chart-container h3 {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+  }
+  
+  /* Recent Activities */
+  .recent-activities {
+    margin-top: 30px;
+  }
+  
+  .recent-activities table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .recent-activities th, .recent-activities td {
+    padding: 12px;
+    text-align: left;
+    border: 1px solid #ddd;
+  }
+  
+  .recent-activities th {
+    background-color: #4caf50;
+    color: white;
+  }
+  
+  .recent-activities td {
+    background-color: #f9f9f9;
+  }
+  
+  .recent-activities tr:hover {
+    background-color: #f1f1f1;
+  }
+  

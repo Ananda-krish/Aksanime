@@ -1,0 +1,85 @@
+.slider-container {
+    padding: 80px;
+    background-color: #f9f9f9;
+  }
+  
+  .slider-title {
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+  
+  .card {
+    text-align: center;
+    padding: 10px;
+    position: relative;
+  }
+  
+  .card-image {
+    width: 100%;
+    border-radius: 10px;
+  }
+  
+  .card-content {
+    margin-top: 10px;
+  }
+  
+  .card-content h3 {
+    font-size: 16px;
+    font-weight: bold;
+  }
+  
+  .card-content p {
+    font-size: 14px;
+    color: #555;
+  }
+  
+  .card-actions {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 10px;
+  }
+  
+  .action-btn {
+    border: none;
+    background-color: #f0f0f0;
+    padding: 5px 10px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .action-btn:hover {
+    background-color: #ddd;
+  }
+  
+  .arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 2;
+    font-size: 24px;
+    cursor: pointer;
+  }
+  
+  .arrow.prev {
+    left: -25px;
+  }
+  
+  .arrow.next {
+    right: -25px;
+  }
+  
+  .badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: green;
+    color: white;
+    padding: 5px;
+    font-size: 12px;
+    border-radius: 5px;
+  }
+  

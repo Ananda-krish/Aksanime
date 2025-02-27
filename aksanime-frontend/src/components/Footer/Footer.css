@@ -1,0 +1,131 @@
+/* General Footer Styles */
+.footer-logo-wrapper {
+    position: relative; /* Ensures proper positioning */
+    display: flex;
+    justify-content: center;
+    margin-top: -50px; /* Pulls the logo above the footer */
+    margin-bottom: 20px; /* Adds spacing below the logo */
+    z-index: 1000; /* Ensures it appears above the footer */
+  }
+  .footer{
+    z-index: 1000;
+  }
+  .footer-logo-round {
+    width: 100px; /* Adjust size as needed */
+    height: 40px; /* Ensure it's a perfect circle */
+     /* Makes the logo round */
+    border: 3px solid #fff;
+    object-fit: cover; /* Keeps the logo image proportionate */
+    background-color: #000; /* Optional: Matches the footer background for better appearance */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); /* Adds a subtle shadow */
+  }
+  
+  /* Footer adjustments for alignment */
+  .footer {
+    position: relative;
+    overflow: visible; /* Ensures the logo isn't cut off */
+    background-color: #000;
+    color: #fff;
+    padding: 40px 20px;
+  }
+  
+  /* Top Section */
+  .footer-top {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-bottom: 1px solid #444;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+  }
+  
+  .footer-logo {
+    font-size: 24px;
+    font-weight: bold;
+  }
+  
+  .footer-socials {
+    display: flex;
+    gap: 15px;
+    margin-top: 10px;
+  }
+  
+  .footer-socials a {
+    color: #fff;
+    font-size: 20px;
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+  
+  .footer-socials a:hover {
+    color: #ff6347; /* Highlight color */
+  }
+  
+  /* Links Section */
+  .footer-links {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+  
+  .footer-links a {
+    color: #fff;
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+  
+  .footer-links a:hover {
+    color: #ff6347;
+  }
+  
+  /* Contact Section */
+  .footer-contact {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+  
+  .footer-contact h4 {
+    margin-bottom: 10px;
+    font-size: 16px;
+  }
+  
+  .phone-number {
+    font-weight: bold;
+    font-size: 18px;
+    margin: 5px 0;
+  }
+  
+  /* Bottom Section */
+  .footer-bottom {
+    text-align: center;
+    margin-top: 20px;
+  }
+  
+  .footer-app-links {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin: 10px 0;
+  }
+  
+  .footer-app-links img {
+    width: 120px;
+    height: auto;
+    transition: transform 0.3s ease;
+  }
+  
+  .footer-app-links img:hover {
+    transform: scale(1.1);
+  }
+  
+  .footer-bottom p {
+    margin: 5px 0;
+    font-size: 14px;
+    color: #ccc;
+  }
+  

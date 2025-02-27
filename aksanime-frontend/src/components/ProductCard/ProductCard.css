@@ -1,0 +1,42 @@
+.card {
+  border: 1px solid #f2efef;
+  background-color: rgb(255, 255, 255);
+  width: 300px;
+  border-radius: 8px;
+  text-align: center;
+}
+.card-img {
+  width: 80%;
+  border-radius: 8px;
+}
+.card-title {
+  font-size: 1.2rem;
+  margin: 8px 0;
+}
+.card-price {
+  color: green;
+  font-weight: bold;
+}
+.card-button {
+  margin-top: 10px;
+  display: flex;
+  justify-content: left;
+  gap: 10px;
+}
+.wishlist-icon{
+  border: 1px solid #000000;
+  padding: 5px;
+  border-radius: 10px;
+}
+.wish-ic{
+  font-size: 25px;
+}
+.addto-cart{
+  font-size: 15px;
+  color: white;
+  background-color: #000000;
+  padding: 10px;
+  width: 100%;
+  border-radius: 8px;
+
+}

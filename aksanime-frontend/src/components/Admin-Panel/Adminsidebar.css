@@ -1,0 +1,36 @@
+.adminsidebar-main {
+  height: 100vh; /* Full height of the viewport */
+  background-color: #ffffff; /* Dark background for sidebar */
+  color: rgb(0, 0, 0); /* White text */
+  padding: 20px;
+  position:sticky; /* Keep sidebar fixed on the left */
+  width: 250px; /* Set a fixed width for the sidebar */
+  top: 0;
+  left: 0;
+  border-right: 2px solid #eceaea; /* Subtle border for separation */
+  /* border-top:2px solid #444; ; */
+  
+}
+
+.adminsidebar-main ul {
+  list-style-type: none;
+  padding-left: 30px;
+}
+
+.adminsidebar-main li {
+  margin: 20px 0; /* Spacing between links */
+}
+
+.adminsidebar-main li a {
+  text-decoration: none;
+  color: rgb(0, 0, 0); /* White text for links */
+  font-size: 20px;
+  padding: 10px;
+  display: block;
+  transition: background-color 0.3s ease; /* Smooth hover effect */
+}
+
+.adminsidebar-main li a:hover {
+  background-color: #ebecef; /* Slightly lighter background on hover */
+  border-radius: 5px; /* Rounded corners */
+}

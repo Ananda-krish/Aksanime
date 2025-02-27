@@ -1,0 +1,14 @@
+.admindashboard {
+    display: flex;
+    flex-direction: row;
+}
+
+.admin-sidebar {
+    width: 250px; /* Adjust as needed */
+    background-color: #f4f4f4;
+}
+
+.admin-body {
+    flex: 1; /* Take up remaining space */
+    padding: 20px;
+}

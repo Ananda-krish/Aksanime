@@ -1,0 +1,17 @@
+.edit-product-form {
+    max-width: 600px;
+    margin: auto;
+}
+
+.edit-product-form form {
+    display: flex;
+    flex-direction: column;
+}
+
+.edit-product-form div {
+    margin-bottom: 15px;
+}
+
+.error-message {
+    color: red;
+}
