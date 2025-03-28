@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\Admin\AdminUserController;
 use App\Http\Controllers\Api\Admin\AnimeCardController;
 use App\Http\Controllers\Api\Admin\AnimiCategoryController;
 use App\Http\Controllers\Api\Admin\CartController;
@@ -96,5 +97,9 @@ Route::prefix('cart')->group(function () {
 
 Route::post('stripe/create-payment-intent', [StripePaymentController::class, 'createPaymentIntent']);
 Route::post('stripe/complete-order', [StripePaymentController::class, 'completeOrder']);
-
-
+Route::prefix('user')->group(function () {
+Route::get('/users', [AdminUserController::class, 'index']);
+Route::delete('/delete/{id}', [AdminUserController::class, 'destroy']);
+Route::put('/update/{id}', [AdminUserController::class, 'update']);
+    Route::get('/show/{id}', [AdminUserController::class, 'show']);
+});

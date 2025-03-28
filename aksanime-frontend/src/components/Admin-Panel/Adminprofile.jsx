@@ -9,6 +9,8 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 ChartJS.register(
   BarElement,
@@ -27,20 +29,35 @@ const AdminProfile = () => {
     deliveredOrders: 0,
     pendingOrders: 0,
   });
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        const response = await fetch('http://localhost:8000/api/login/index');
-        const data = await response.json();
-        setDashboardData(data.stats);
+        const token = localStorage.getItem('token');
+        if (!token) {
+          navigate('/login');
+          return;
+        }
+
+        const response = await axios.get('http://localhost:8000/api/login/index', {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        setDashboardData(response.data.stats);
       } catch (error) {
         console.error('Failed to fetch dashboard data:', error);
+        if (error.response && error.response.status === 401) {
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
+          navigate('/login');
+        }
       }
     };
 
     fetchDashboardData();
-  }, []);
+  }, [navigate]);
 
   const orderData = {
     labels: ['Delivered Orders', 'Pending Orders'],
@@ -52,6 +69,31 @@ const AdminProfile = () => {
         borderWidth: 1,
       },
     ],
+  };
+
+  const handleLogout = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        navigate("/login");
+        return;
+      }
+
+      await axios.post(
+        "http://localhost:8000/api/login/logout",
+        null,
+        { headers: { Authorization: `Bearer ${token}` } }
+      ).catch(() => {});
+
+      localStorage.removeItem("user");
+      localStorage.removeItem("token");
+      navigate("/login");
+    } catch (error) {
+      console.error("Logout error:", error);
+      localStorage.removeItem("user");
+      localStorage.removeItem("token");
+      navigate("/login");
+    }
   };
 
   return (
@@ -67,7 +109,10 @@ const AdminProfile = () => {
             <button className="px-6 py-2 font-semibold text-blue-600 transition-all bg-white rounded-lg shadow-sm hover:bg-blue-50">
               Edit Profile
             </button>
-            <button className="px-6 py-2 font-semibold text-white transition-all bg-red-500 rounded-lg shadow-sm hover:bg-red-600">
+            <button 
+              className="px-6 py-2 font-semibold text-white transition-all bg-red-500 rounded-lg shadow-sm hover:bg-red-600" 
+              onClick={handleLogout}
+            >
               Logout
             </button>
           </div>

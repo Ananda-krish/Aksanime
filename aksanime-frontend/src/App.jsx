@@ -1,6 +1,5 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home/Home';
-import Offers from './pages/Offers/Offers';
 import PageNotFound from './pages/PageNotFound/PageNotFound';
 import Cart from './pages/Cart/Cart';
 import AdminDashboard from './pages/Admin/AdminDashboard';
@@ -27,8 +26,6 @@ import ProductCategoryEdit from './components/Admin-Panel/ProductCategory/Produc
 import ProductCreate from './components/Admin-Panel/Product/ProductCreate';
 import ProductList from './components/Admin-Panel/Product/ProductList';
 import ProductEdit from './components/Admin-Panel/Product/ProductEdit';
-import ParticlesBackground from './components/ParticlesBackground';
-import DefaultLayout from './components/DefaultLayout/DefaultLayout';
 import UserEpisode from './components/Userpage/UserEpisode';
 import UserProduct from './components/Userpage/UserProduct';
 import ProductCart from './components/Userpage/ProductCart';
@@ -36,6 +33,12 @@ import OrderList from './pages/Admin/OrderList';
 import UserOrder from './components/Userpage/UserOrder';
 import StripePaymentForm from './components/Userpage/StripePaymentForm';
 import VerifyEmail from './components/Login/VerifyEmail';
+
+import Called from './components/Userpage/Called';
+import UserOrderPage from './components/Userpage/UserOrder';
+import EditUser from './components/Admin-Panel/EditUser';
+import AksanimeContact from './components/Userpage/AksanimeContact';
+import AboutUs from './components/Userpage/AboutUs';
 
 
 
@@ -101,8 +104,21 @@ const App = () => {
         } />
          <Route path="/userorder" element={
           <ProtectedRoute allowedRoles={["user", "admin"]}>
-            <UserOrder/>
+            <UserOrderPage/>
           </ProtectedRoute>
+          
+        } />
+          <Route path="/AksanimeContact" element={
+          <ProtectedRoute allowedRoles={["user", "admin"]}>
+            <AksanimeContact />
+          </ProtectedRoute>
+          
+        } />
+        <Route path="/Aboutus" element={
+          <ProtectedRoute allowedRoles={["user", "admin"]}>
+            <AboutUs />
+          </ProtectedRoute>
+          
         } />
           <Route path="/stripe/:total" element={
           <ProtectedRoute allowedRoles={["user", "admin"]}>
@@ -119,6 +135,7 @@ const App = () => {
           <Route index element={<Adminprofile />} />
           <Route path="admin-profile" element={<Adminprofile />} />
           <Route path="admin-user" element={<Adminuser />} />
+          <Route path="adminuser-edit/:id" element={<EditUser />} />
           
           {/* Category Routes */}
           <Route path="create/category" element={<CreateCategory />} />

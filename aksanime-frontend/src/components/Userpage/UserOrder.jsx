@@ -35,8 +35,8 @@ const UserOrderPage = () => {
   const sidebarNavItems = [
     { icon: <FileTextIcon />, label: 'All Orders', value: 'all' },
     { icon: <PackageIcon />, label: 'In Progress', value: 'in progress' },
-    { icon: <TruckIcon />, label: 'Shipped', value: 'shipped' },
-    { icon: <CheckCircleIcon />, label: 'Delivered', value: 'delivered' }
+    
+    { icon: <CheckCircleIcon />, label: 'Delivered', value: 'Delivered' }
   ];
 
   const renderOrderStatus = (status) => {
@@ -53,36 +53,13 @@ const UserOrderPage = () => {
 
   return (
     <DefaultLayout>
-      <div className="flex mr-94"> {/* Added margin-left */}
-        {/* Sidebar Navigation */}
-        <motion.div 
-          initial={{ x: -50, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{ type: 'spring', stiffness: 100 }}
-          className="fixed top-0 left-0 w-64 h-full p-4 bg-white shadow-lg"
-        >
-          <h2 className="mb-6 text-2xl font-bold">My Orders</h2>
-          {sidebarNavItems.map((item) => (
-            <motion.div
-              key={item.value}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              onClick={() => setActiveTab(item.value)}
-              className={`flex items-center p-3 mb-2 rounded-lg cursor-pointer transition-all 
-                ${activeTab === item.value ? 'bg-blue-500 text-white' : 'hover:bg-gray-100'}`}
-            >
-              {item.icon}
-              <span className="ml-3">{item.label}</span>
-            </motion.div>
-          ))}
-        </motion.div>
-
+      <div className="relative flex flex-col mr-30 md:flex-row">
         {/* Orders Content */}
         <motion.div 
           initial={{ opacity: 0, x: 50 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ type: 'spring', stiffness: 100 }}
-          className="flex-1 min-h-screen p-8 bg-gray-50"
+          className="flex-1 min-h-screen p-8 bg-gray-50 md:ml-64"
         >
           {filterOrders(activeTab).length === 0 ? (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center text-gray-500">
@@ -93,7 +70,7 @@ const UserOrderPage = () => {
               {filterOrders(activeTab).map((order) => (
                 <motion.div
                   key={order.id}
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={{ opacity: 0, y: 50 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ type: 'spring', stiffness: 100 }}
                   className="p-6 transition-shadow bg-white rounded-lg shadow-md hover:shadow-lg"
@@ -129,6 +106,29 @@ const UserOrderPage = () => {
               ))}
             </div>
           )}
+        </motion.div>
+
+        {/* Sidebar Navigation */}
+        <motion.div 
+          initial={{ x: -50, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ type: 'spring', stiffness: 100 }}
+          className="fixed top-0 right-0 z-10 w-64 h-full p-4 bg-white shadow-lg md:block"
+        >
+          <h2 className="mb-6 text-2xl font-bold">My Orders</h2>
+          {sidebarNavItems.map((item) => (
+            <motion.div
+              key={item.value}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => setActiveTab(item.value)}
+              className={`flex items-center p-3 mb-2 rounded-lg cursor-pointer transition-all 
+                ${activeTab === item.value ? 'bg-blue-500 text-white' : 'hover:bg-gray-100'}`}
+            >
+              {item.icon}
+              <span className="ml-3">{item.label}</span>
+            </motion.div>
+          ))}
         </motion.div>
       </div>
     </DefaultLayout>

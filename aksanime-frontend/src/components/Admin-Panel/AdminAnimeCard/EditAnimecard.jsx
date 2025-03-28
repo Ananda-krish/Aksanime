@@ -17,7 +17,9 @@ const EditAnimecard = () => {
     });
     const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [submitting, setSubmitting] = useState(false);
     const [error, setError] = useState(null);
+    const [validationErrors, setValidationErrors] = useState({});
     const [successMessage, setSuccessMessage] = useState('');
     const [imagePreview, setImagePreview] = useState(null);
     const [newImage, setNewImage] = useState(null);
@@ -28,23 +30,40 @@ const EditAnimecard = () => {
 
     const fetchData = async () => {
         try {
+            // Fetch anime data and categories in parallel
             const [animeResponse, categoriesResponse] = await Promise.all([
                 fetch(`http://127.0.0.1:8000/api/animecard/animeshow/${id}`),
                 fetch('http://127.0.0.1:8000/api/categoryCard/categorylist')
             ]);
 
-            if (!animeResponse.ok || !categoriesResponse.ok) {
-                throw new Error('Failed to fetch data');
+            if (!animeResponse.ok) {
+                throw new Error('Failed to fetch anime data');
             }
 
-            const [categoriesData, animeData] = await animeResponse.json();
-            const categoryList = await categoriesResponse.json();
+            if (!categoriesResponse.ok) {
+                throw new Error('Failed to fetch categories');
+            }
 
-            setFormData(animeData);
-            setCategories(categoryList.data || []);
-            setImagePreview(animeData.image_url ? `http://127.0.0.1:8000${animeData.image_url}` : null);
+            const animeData = await animeResponse.json();
+            const categoriesData = await categoriesResponse.json();
+
+            // Check if animeData is properly structured
+            if (!animeData || !animeData.data) {
+                throw new Error('Invalid anime data format');
+            }
+
+            setFormData(animeData.data);
+            setCategories(Array.isArray(categoriesData.data) ? categoriesData.data : []);
+            
+            // Set image preview with correct URL path
+            if (animeData.data.image_url) {
+                const imageUrl = animeData.data.image_url.startsWith('http') 
+                    ? animeData.data.image_url 
+                    : `http://127.0.0.1:8000${animeData.data.image_url}`;
+                setImagePreview(imageUrl);
+            }
         } catch (err) {
-            setError('Failed to load anime data. Please try again.');
+            setError(`Failed to load data: ${err.message}`);
             console.error('Fetch error:', err);
         } finally {
             setLoading(false);
@@ -52,30 +71,56 @@ const EditAnimecard = () => {
     };
 
     const validateForm = () => {
-        const errors = [];
-        if (!formData.title?.trim()) errors.push('Title is required');
-        if (!formData.description?.trim()) errors.push('Description is required');
-        if (!formData.short_id) errors.push('Short ID is required');
-        if (!formData.rating || formData.rating < 0 || formData.rating > 10) {
-            errors.push('Rating must be between 0 and 10');
+        const errors = {};
+        
+        if (!formData.title?.trim()) {
+            errors.title = 'Title is required';
         }
-        if (!formData.anime_category_id) errors.push('Category is required');
-        if (!formData.seasons || formData.seasons < 1) errors.push('Seasons must be at least 1');
-        if (!formData.latest_episode || formData.latest_episode < 1) {
-            errors.push('Latest episode must be at least 1');
+        
+        if (!formData.short_id?.trim()) {
+            errors.short_id = 'Short ID is required';
+        }
+        
+        if (!formData.description?.trim()) {
+            errors.description = 'Description is required';
+        }
+        
+        if (!formData.rating || parseFloat(formData.rating) < 0 || parseFloat(formData.rating) > 10) {
+            errors.rating = 'Rating must be between 0 and 10';
+        }
+        
+        if (!formData.anime_category_id) {
+            errors.anime_category_id = 'Category is required';
+        }
+        
+        if (!formData.seasons || parseInt(formData.seasons) < 1) {
+            errors.seasons = 'Seasons must be at least 1';
+        }
+        
+        if (!formData.latest_episode || parseInt(formData.latest_episode) < 1) {
+            errors.latest_episode = 'Latest episode must be at least 1';
+        }
+        
+        if (!formData.status) {
+            errors.status = 'Status is required';
         }
 
-        if (errors.length > 0) {
-            setError(errors.join(', '));
-            return false;
-        }
-        return true;
+        setValidationErrors(errors);
+        return Object.keys(errors).length === 0;
     };
 
     const handleChange = (e) => {
         const { name, value, type, files } = e.target;
         
-        if (type === 'file') {
+        // Clear validation error when field is edited
+        if (validationErrors[name]) {
+            setValidationErrors({
+                ...validationErrors,
+                [name]: null
+            });
+        }
+        
+        if (type === 'file' && files.length > 0) {
             const file = files[0];
             setNewImage(file);
             setImagePreview(URL.createObjectURL(file));
@@ -89,58 +134,85 @@ const EditAnimecard = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!validateForm()) return;
-
-        setLoading(true);
+        
+        // Reset error states
         setError(null);
+        setValidationErrors({});
+        
+        // Validate form before submission
+        if (!validateForm()) {
+            return;
+        }
+
+        setSubmitting(true);
         
         const formDataToSend = new FormData();
+        
+        // Append all form fields except image_url (which we'll handle separately)
         Object.entries(formData).forEach(([key, value]) => {
-            if (value !== null && value !== undefined && key !== 'image_url') {
+            if (value !== null && value !== undefined && key !== 'image_url' && value !== '') {
                 formDataToSend.append(key, value);
             }
         });
 
+        // Append new image if selected
         if (newImage) {
             formDataToSend.append('image_url', newImage);
         }
 
+        // Laravel requires _method for form PUT requests
         formDataToSend.append('_method', 'PUT');
 
         try {
             const response = await fetch(
                 `http://127.0.0.1:8000/api/animecard/animeupdate/${id}`,
                 {
-                    method: 'POST',
+                    method: 'POST', // Always POST when using FormData with _method
                     body: formDataToSend,
                     headers: {
                         'Accept': 'application/json',
-                        
-                    },
-                
-                });
-                    
-               
+                        // Don't set Content-Type when using FormData
+                    }
+                }
+            );
+
+            const responseData = await response.json();
 
             if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || 'Failed to update anime');
+                // Handle validation errors from server
+                if (response.status === 422 && responseData.errors) {
+                    setValidationErrors(responseData.errors);
+                    throw new Error("Please correct the form errors");
+                }
+                throw new Error(responseData.message || 'Failed to update anime card');
             }
 
-            setSuccessMessage('Anime updated successfully!');
+            setSuccessMessage('Anime card updated successfully!');
             setTimeout(() => navigate('/admin-dashboard/animecard/list'), 1500);
         } catch (err) {
             setError(err.message);
             console.error('Update error:', err);
         } finally {
-            setLoading(false);
+            setSubmitting(false);
         }
+    };
+
+    const renderFieldError = (fieldName) => {
+        if (validationErrors[fieldName]) {
+            return (
+                <p className="mt-1 text-sm text-red-600">{validationErrors[fieldName]}</p>
+            );
+        }
+        return null;
     };
 
     if (loading) {
         return (
             <div className="flex items-center justify-center min-h-screen">
-                <div className="p-4 text-center">Loading...</div>
+                <div className="p-4 text-center">
+                    <div className="w-12 h-12 mx-auto border-4 border-gray-200 rounded-full border-t-blue-500 animate-spin"></div>
+                    <p className="mt-2">Loading anime data...</p>
+                </div>
             </div>
         );
     }
@@ -169,9 +241,11 @@ const EditAnimecard = () => {
                         </label>
                         <select
                             name="anime_category_id"
-                            value={formData.anime_category_id}
+                            value={formData.anime_category_id || ''}
                             onChange={handleChange}
-                            className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500"
+                            className={`w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 ${
+                                validationErrors.anime_category_id ? "border-red-500" : ""
+                            }`}
                             required
                         >
                             <option value="">Select Category</option>
@@ -181,6 +255,7 @@ const EditAnimecard = () => {
                                 </option>
                             ))}
                         </select>
+                        {renderFieldError("anime_category_id")}
                     </div>
 
                     <div>
@@ -190,11 +265,14 @@ const EditAnimecard = () => {
                         <input
                             type="text"
                             name="title"
-                            value={formData.title}
+                            value={formData.title || ''}
                             onChange={handleChange}
-                            className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500"
+                            className={`w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 ${
+                                validationErrors.title ? "border-red-500" : ""
+                            }`}
                             required
                         />
+                        {renderFieldError("title")}
                     </div>
 
                     <div>
@@ -204,11 +282,17 @@ const EditAnimecard = () => {
                         <input
                             type="text"
                             name="short_id"
-                            value={formData.short_id}
+                            value={formData.short_id || ''}
                             onChange={handleChange}
-                            className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500"
+                            className={`w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 ${
+                                validationErrors.short_id ? "border-red-500" : ""
+                            }`}
                             required
                         />
+                        <p className="mt-1 text-xs text-gray-500">
+                            A unique identifier for the anime (e.g., "naruto", "aot")
+                        </p>
+                        {renderFieldError("short_id")}
                     </div>
 
                     <div>
@@ -217,15 +301,18 @@ const EditAnimecard = () => {
                         </label>
                         <textarea
                             name="description"
-                            value={formData.description}
+                            value={formData.description || ''}
                             onChange={handleChange}
                             rows="4"
-                            className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500"
+                            className={`w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 ${
+                                validationErrors.description ? "border-red-500" : ""
+                            }`}
                             required
                         />
+                        {renderFieldError("description")}
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                         <div>
                             <label className="block mb-1 text-sm font-medium">
                                 Rating (0-10)
@@ -233,14 +320,17 @@ const EditAnimecard = () => {
                             <input
                                 type="number"
                                 name="rating"
-                                value={formData.rating}
+                                value={formData.rating || ''}
                                 onChange={handleChange}
                                 min="0"
                                 max="10"
                                 step="0.1"
-                                className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500"
+                                className={`w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 ${
+                                    validationErrors.rating ? "border-red-500" : ""
+                                }`}
                                 required
                             />
+                            {renderFieldError("rating")}
                         </div>
 
                         <div>
@@ -250,12 +340,15 @@ const EditAnimecard = () => {
                             <input
                                 type="number"
                                 name="seasons"
-                                value={formData.seasons}
+                                value={formData.seasons || ''}
                                 onChange={handleChange}
                                 min="1"
-                                className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500"
+                                className={`w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 ${
+                                    validationErrors.seasons ? "border-red-500" : ""
+                                }`}
                                 required
                             />
+                            {renderFieldError("seasons")}
                         </div>
                     </div>
 
@@ -266,19 +359,22 @@ const EditAnimecard = () => {
                         <input
                             type="number"
                             name="latest_episode"
-                            value={formData.latest_episode}
+                            value={formData.latest_episode || ''}
                             onChange={handleChange}
                             min="1"
-                            className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500"
+                            className={`w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 ${
+                                validationErrors.latest_episode ? "border-red-500" : ""
+                            }`}
                             required
                         />
+                        {renderFieldError("latest_episode")}
                     </div>
 
                     <div>
                         <label className="block mb-1 text-sm font-medium">
                             Status
                         </label>
-                        <div className="flex space-x-4">
+                        <div className="flex flex-wrap gap-4">
                             {['ongoing', 'completed', 'upcoming'].map((status) => (
                                 <label key={status} className="flex items-center">
                                     <input
@@ -294,41 +390,71 @@ const EditAnimecard = () => {
                                 </label>
                             ))}
                         </div>
+                        {renderFieldError("status")}
                     </div>
 
                     <div>
                         <label className="block mb-1 text-sm font-medium">
                             Current Image
                         </label>
-                        {imagePreview && (
-                            <img
-                                src={imagePreview}
-                                alt="Preview"
-                                className="object-cover w-32 h-32 mb-2 rounded"
-                            />
+                        {imagePreview ? (
+                            <div className="relative inline-block">
+                                <img
+                                    src={imagePreview}
+                                    alt="Preview"
+                                    className="object-cover w-48 h-48 mb-2 border rounded"
+                                />
+                            </div>
+                        ) : (
+                            <p className="text-sm text-gray-500">No image available</p>
                         )}
                     </div>
 
                     <div>
                         <label className="block mb-1 text-sm font-medium">
-                            New Image
+                            {newImage ? "Replace Image" : "Upload New Image"}
                         </label>
                         <input
                             type="file"
                             name="image_url"
                             onChange={handleChange}
                             accept="image/*"
-                            className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500"
+                            className={`w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 ${
+                                validationErrors.image_url ? "border-red-500" : ""
+                            }`}
                         />
+                        <p className="mt-1 text-xs text-gray-500">
+                            Leave empty to keep the current image
+                        </p>
+                        {renderFieldError("image_url")}
                     </div>
 
-                    <button
-                        type="submit"
-                        disabled={loading}
-                        className="w-full px-4 py-2 text-white transition-colors bg-blue-600 rounded hover:bg-blue-700 disabled:bg-blue-300 disabled:cursor-not-allowed"
-                    >
-                        {loading ? "Updating..." : "Update Anime Card"}
-                    </button>
+                    <div className="flex gap-2 mt-6">
+                        <button
+                            type="button"
+                            onClick={() => navigate('/admin-dashboard/animecard/list')}
+                            className="w-full px-4 py-2 text-gray-700 transition-colors bg-gray-200 rounded hover:bg-gray-300 disabled:bg-gray-100 disabled:cursor-not-allowed"
+                            disabled={submitting}
+                        >
+                            Cancel
+                        </button>
+                        
+                        <button
+                            type="submit"
+                            disabled={submitting}
+                            className="w-full px-4 py-2 text-white transition-colors bg-blue-600 rounded hover:bg-blue-700 disabled:bg-blue-300 disabled:cursor-not-allowed"
+                        >
+                            {submitting ? (
+                                <span className="flex items-center justify-center">
+                                    <svg className="w-5 h-5 mr-2 -ml-1 text-white animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>
+                                    Updating...
+                                </span>
+                            ) : "Update Anime Card"}
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>

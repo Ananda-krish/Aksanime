@@ -9,6 +9,8 @@ use Illuminate\Http\Request;
 use Stripe\Stripe;
 use Stripe\PaymentIntent;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class StripePaymentController extends Controller
 {
@@ -18,17 +20,14 @@ class StripePaymentController extends Controller
 
         try {
             $amount = $request->amount;
-
-            // Create a PaymentIntent
             $paymentIntent = PaymentIntent::create([
-                'amount' => (float)$amount * 100, // Convert to cents
+                'amount' => (float)$amount * 100,
                 'currency' => 'usd',
             ]);
 
             return response()->json([
                 'clientSecret' => $paymentIntent->client_secret
             ]);
-
         } catch (\Exception $e) {
             return response()->json([
                 'error' => $e->getMessage()
@@ -38,9 +37,11 @@ class StripePaymentController extends Controller
 
     public function completeOrder(Request $request)
     {
+        DB::beginTransaction();
+
         try {
             // Validate request data
-            $data = $request->validate([
+            $validated = $request->validate([
                 'name' => 'required|string',
                 'address' => 'required|string',
                 'phone' => 'required|string',
@@ -48,33 +49,50 @@ class StripePaymentController extends Controller
 
             // Get authenticated user
             $user = JWTAuth::parseToken()->authenticate();
-            $userId = $user->id;
 
-            // Get cart items
-            $cartItems = Cart::where('user_id', $userId)->get();
+            // Get cart items with product details
+            $cartItems = Cart::with('product')
+                ->where('user_id', $user->id)
+                ->get();
+
+            if ($cartItems->isEmpty()) {
+                throw new \Exception('No items in cart');
+            }
+
+            // Log cart items for debugging
+            Log::info('Creating orders for cart items:', $cartItems->toArray());
 
             // Create orders for each cart item
             foreach ($cartItems as $cartItem) {
-                Order::create([
-                    'name' => $data['name'],
-                    'rec_address' => $data['address'],
-                    'phone' => $data['phone'],
-                    'user_id' => $userId,
+                $order = Order::create([
+                    'name' => $validated['name'],
+                    'rec_address' => $validated['address'],
+                    'phone' => $validated['phone'],
+                    'user_id' => $user->id,
                     'product_id' => $cartItem->product_id,
-                    'payment_status' => 'paid',
+                    'status' => 'in progress',
+                    'payment_status' => 'paid', // Make sure this matches your migration
                 ]);
+
+                Log::info('Created order:', $order->toArray());
             }
 
             // Clear the cart
-            Cart::where('user_id', $userId)->delete();
+            Cart::where('user_id', $user->id)->delete();
+
+            DB::commit();
 
             return response()->json([
-                'message' => 'Order placed successfully'
+                'message' => 'Order placed successfully',
+                'order_count' => $cartItems->count()
             ], 200);
 
         } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Order creation failed: ' . $e->getMessage());
             return response()->json([
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
             ], 500);
         }
     }

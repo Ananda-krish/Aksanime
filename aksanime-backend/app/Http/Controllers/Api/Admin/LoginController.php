@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\URL;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
+use Tymon\JWTAuth\Exceptions\TokenExpiredException;
+
 class LoginController extends Controller
 {
     /**
@@ -39,7 +41,7 @@ class LoginController extends Controller
 
         // Create the user
         $user = User::create($validated);
-       
+        $user->markEmailAsVerified();
         // Generate JWT token for the newly registered user
         $token = JWTAuth::fromUser($user);
 
@@ -113,16 +115,23 @@ class LoginController extends Controller
     public function logout()
     {
         try {
-            // Invalidate the current token
-            JWTAuth::invalidate(JWTAuth::getToken());
+            $token = JWTAuth::getToken();
 
-            return response()->json([
-                'message' => 'Logged out successfully',
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'error' => 'Failed to logout',
-            ], 500);
+            if (!$token) {
+                return response()->json(['message' => 'Token not provided'], 400);
+            }
+
+            try {
+                // Try to invalidate the token if it's still valid
+                JWTAuth::invalidate($token);
+                return response()->json(['message' => 'Logged out successfully']);
+            } catch (TokenExpiredException $e) {
+                // Token is expired but we'll still consider it logged out
+                return response()->json(['message' => 'Logged out (token was expired)']);
+            }
+        } catch (JWTException $e) {
+            // Other JWT exceptions
+            return response()->json(['message' => 'Logged out (token invalid)']);
         }
     }
     public function refreshToken(Request $request)

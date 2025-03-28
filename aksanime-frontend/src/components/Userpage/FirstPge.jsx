@@ -1,5 +1,9 @@
 import ParticlesComponent from "../ParticlesBackground";
 import black from "../../assets/hinata.jpg"
+import nami from "../../assets/nami.jpg"
+import mikasa from "../../assets/mikasa.jpg"
+import goku from "../../assets/goku.jpg"
+import bleach from "../../assets/bleach.jpg"
 import React, { useEffect, useRef } from 'react';
 import Slider from 'react-slick';
 import { gsap } from 'gsap';
@@ -23,7 +27,6 @@ const CustomArrow = ({ direction, onClick }) => (
     )}
   </button>
 );
-
 
 function FirstPage({ user, handleLogout }) {
   const heroRef = useRef(null);
@@ -60,29 +63,49 @@ function FirstPage({ user, handleLogout }) {
 
   const slides = [
     {
-      image: black,
-      title: 'Urban Innovation',
-      description: 'Transforming cityscapes with creative advertising solutions'
+      image: goku,
+      title: 'GOKU',
+      description: 'Believe in the power of dreams!',
+      titleFont: 'font-bold font-[Arial] text-7xl sm:text-8xl lg:text-9xl',
+      titleColor: 'text-[#FFD700]', // Golden yellow
+      descriptionFont: 'font-semibold font-[Comic Sans MS] text-3xl sm:text-4xl lg:text-5xl',
+      descriptionColor: 'text-[#FF4500]' // Orange-red
+    },
+    {
+      image: nami,
+      title: 'LUFFY',
+      description: 'Adventure is out there!',
+      titleFont: 'font-extrabold font-[Impact] text-7xl sm:text-8xl lg:text-9xl',
+      titleColor: 'text-[#1E90FF]', // Dodger blue
+      descriptionFont: 'font-medium font-[Brush Script MT] text-3xl sm:text-4xl lg:text-5xl',
+      descriptionColor: 'text-[#32CD32]' // Lime green
     },
     {
       image: black,
-      title: 'Strategic Placement',
-      description: 'Prime locations that capture your target audience'
+      title: 'NARUTO',
+      description: 'Never give up! That\'s my Ninja Way!',
+      titleFont: 'font-black font-[Times New Roman] text-7xl sm:text-8xl lg:text-9xl',
+      titleColor: 'text-[#FF6347]', // Tomato red
+      descriptionFont: 'font-bold font-[Lucida Handwriting] text-3xl sm:text-4xl lg:text-5xl',
+      descriptionColor: 'text-[#4169E1]' // Royal blue
     },
     {
-      image: black,
-      title: 'Digital Excellence',
-      description: 'Cutting-edge display technology for maximum impact'
+      image: mikasa,
+      title: 'LEVI',
+      description: 'Fight! In this world, cruelty is weakness!',
+      titleFont: 'font-extrabold font-[Courier New] text-7xl sm:text-8xl lg:text-9xl',
+      titleColor: 'text-[#8A2BE2]', // Blue violet
+      descriptionFont: 'font-semibold font-[Papyrus] text-3xl sm:text-4xl lg:text-5xl',
+      descriptionColor: 'text-[#FF8C00]' // Dark orange
     },
     {
-      image: black,
-      title: 'Brand Elevation',
-      description: 'Taking your brand presence to new heights'
-    },
-    {
-      image: black,
-      title: 'Visual Impact',
-      description: 'Creating memorable outdoor experiences'
+      image: bleach,
+      title: 'BYAKUYA',
+      description: 'My Senbonzakura does not scatter a single petal in vain.',
+      titleFont: 'font-bold font-[Georgia] text-7xl sm:text-8xl lg:text-9xl',
+      titleColor: 'text-[#00CED1]', // Dark turquoise
+      descriptionFont: 'font-medium font-[Garamond] text-3xl sm:text-4xl lg:text-5xl',
+      descriptionColor: 'text-[#DC143C]' // Crimson
     }
   ];
 
@@ -142,26 +165,30 @@ function FirstPage({ user, handleLogout }) {
         <div className="w-full lg:w-[60%] h-[50vh] sm:h-[60vh] lg:h-[70vh] mx-0 lg:mx-10 relative overflow-visible transform 
             perspective-1000 rotate-y-0 transition-all duration-500 
             rounded-xl shadow-[0_20px_50px_rgba(8,_112,_184,_0.7)]">
-  <Slider ref={centerSliderRef} {...mainSettings}>
-    {slides.map((slide, index) => (
-      <div key={index} className="h-[50vh] sm:h-[60vh] lg:h-[70vh] relative"> {/* Reduce lg:h value */}
-        <img
-          src={slide.image}
-          alt={slide.title}
-          className="object-cover w-full h-full rounded-xl"
-          loading="eager"
-          style={{ imageRendering: 'crisp-edges' }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-transparent rounded-xl">
-          <div className="absolute left-0 right-0 p-4 text-center text-white top-1/3">
-            <h2 className="mb-2 text-3xl font-bold sm:text-4xl lg:text-5xl sm:mb-4 drop-shadow-lg">{slide.title}</h2>
-            <p className="text-sm sm:text-lg lg:text-xl drop-shadow-lg">{slide.description}</p>
-          </div>
+          <Slider ref={centerSliderRef} {...mainSettings}>
+            {slides.map((slide, index) => (
+              <div key={index} className="h-[50vh] sm:h-[60vh] lg:h-[70vh] relative">
+                <img
+                  src={slide.image}
+                  alt={slide.title}
+                  className="object-cover w-full h-full rounded-xl"
+                  loading="eager"
+                  style={{ imageRendering: 'crisp-edges' }}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-transparent rounded-xl">
+                  <div className="absolute left-0 right-0 p-4 text-center text-white top-1/4">
+                    <h2 className={`mb-4 drop-shadow-lg ${slide.titleFont} ${slide.titleColor}`}>
+                      {slide.title}
+                    </h2>
+                    <p className={`drop-shadow-lg ${slide.descriptionFont} ${slide.descriptionColor}`}>
+                      {slide.description}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </Slider>
         </div>
-      </div>
-    ))}
-  </Slider>
-</div>
 
         <div className="hidden lg:block w-[15%] h-[60vh] relative overflow-hidden transform 
             perspective-1000 rotate-y-10 hover:rotate-y-0 transition-all duration-500 
@@ -199,4 +226,5 @@ function FirstPage({ user, handleLogout }) {
     </section>
   );
 };
+
 export default FirstPage;

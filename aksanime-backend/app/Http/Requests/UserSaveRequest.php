@@ -3,14 +3,13 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
-class UserSaveRequest extends FormRequest
-{
+class UserSaveRequest extends FormRequest {
     /**
      * Determine if the user is authorized to make this request.
      */
-    public function authorize(): bool
-    {
+    public function authorize(): bool     {
         return true;
     }
 
@@ -19,8 +18,7 @@ class UserSaveRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
-    public function rules(): array
-    {
+    public function rules(): array     {
         $rules = [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
@@ -33,7 +31,10 @@ class UserSaveRequest extends FormRequest
 
         // Modify rules for update requests
         if ($this->isMethod('PUT') || $this->isMethod('PATCH')) {
-            $rules['email'] = 'required|string|email|max:255|unique:users,email,' . $this->user()->id;
+            // Use the current route parameter for user ID
+            $userId = $this->route('id');
+
+            $rules['email'] = 'required|string|email|max:255|unique:users,email,' . $userId;
             $rules['password'] = 'nullable|string|min:8';
             $rules['confirm_password'] = 'nullable|same:password';
         }

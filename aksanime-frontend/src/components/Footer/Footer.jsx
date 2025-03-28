@@ -1,111 +1,141 @@
-import React from "react";
-import "./Footer.css";
-import logo from '../../assets/logo123.png';
-import playstore from '../../assets/image.png';
-import applestore from '../../assets/applestore.png';
-function Footer() {
+import React from 'react';
+import { motion } from 'framer-motion';
+import { 
+  Facebook, 
+  Twitter, 
+  Instagram, 
+  Youtube, 
+  Github 
+} from 'lucide-react';
+import logo from '../../assets/aks.jpg';
+
+const Footer = () => {
+  const socialLinks = [
+    { icon: Facebook, href: '#' },
+    { icon: Twitter, href: '#' },
+    { icon: Instagram, href: '#' },
+    { icon: Youtube, href: '#' },
+    { icon: Github, href: '#' }
+  ];
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: { 
+      opacity: 1,
+      transition: {
+        delayChildren: 0.3,
+        staggerChildren: 0.2
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: { 
+      y: 0, 
+      opacity: 1,
+      transition: {
+        type: 'spring',
+        damping: 12,
+        stiffness: 100
+      }
+    }
+  };
+
   return (
-    <footer className="footer">
-      {/* Logo at the top of the page */}
-      <div className="footer-logo-wrapper">
-        <img
-          src={logo}
-          alt="SUGAR Logo"
-          className="footer-logo-round"
-        />
+    <motion.footer 
+      initial="hidden"
+      animate="visible"
+      variants={containerVariants}
+      className="bg-gradient-to-r from-black via-gray-900 to-black text-white py-12 px-4 md:px-12 relative z-[1000]"
+    >
+      <div className="container grid gap-8 mx-auto md:grid-cols-3">
+        {/* Logo Section */}
+        <motion.div 
+          variants={itemVariants}
+          className="flex flex-col items-center md:items-start"
+        >
+          <img 
+            src={logo} 
+            alt="AKSanime Logo" 
+            className="object-cover w-24 h-24 mb-4 border-2 border-white rounded-full"
+          />
+          <h2 className="text-2xl font-bold text-white">AKSanime</h2>
+          <p className="mt-2 text-center text-gray-400 md:text-left">
+            Your Premium Anime Streaming Platform
+          </p>
+        </motion.div>
+
+        {/* Quick Links */}
+        <motion.div 
+          variants={itemVariants}
+          className="flex flex-col items-center"
+        >
+          <h3 className="mb-4 text-xl font-semibold">Quick Links</h3>
+          <nav className="space-y-2 text-center">
+            <a href="#" className="block transition-colors hover:text-red-500">Home</a>
+            <a href="#" className="block transition-colors hover:text-red-500">Anime Catalog</a>
+            <a href="#" className="block transition-colors hover:text-red-500">Manga</a>
+            <a href="#" className="block transition-colors hover:text-red-500">About Us</a>
+            <a href="#" className="block transition-colors hover:text-red-500">Contact</a>
+          </nav>
+        </motion.div>
+
+        {/* Contact & Social */}
+        <motion.div 
+          variants={itemVariants}
+          className="flex flex-col items-center"
+        >
+          <h3 className="mb-4 text-xl font-semibold">Contact & Social</h3>
+          <div className="mb-4 space-y-2 text-center">
+            <p>📞 +91 7012674863</p>
+            <p>✉️ ebinebin54@gmail.com</p>
+            <p>📍 Elappara, Peerumade, Idukki, Kerala</p>
+          </div>
+          
+          <div className="flex space-x-4">
+            {socialLinks.map(({ icon: Icon, href }, index) => (
+              <motion.a 
+                key={index}
+                href={href}
+                whileHover={{ scale: 1.2 }}
+                whileTap={{ scale: 0.9 }}
+                className="text-white hover:text-red-500"
+              >
+                <Icon size={24} />
+              </motion.a>
+            ))}
+          </div>
+        </motion.div>
       </div>
 
-      {/* Top Section */}
-      <div className="footer-top">
-        <div className="footer-logo">SPARCLE</div>
-        <div className="footer-socials">
-          <a href="#" aria-label="Facebook">
-            <i className="fab fa-facebook-f"></i>
+      {/* App Download & Copyright */}
+      <motion.div 
+        variants={itemVariants}
+        className="pt-6 mt-8 text-center border-t border-gray-800"
+      >
+        <h4 className="mb-4 text-lg">Get the AKSanime App</h4>
+        <div className="flex justify-center space-x-4">
+          <a 
+            href="#" 
+            className="px-4 py-2 text-white transition-colors bg-green-600 rounded-lg hover:bg-green-700"
+          >
+            Google Play
           </a>
-          <a href="#" aria-label="Twitter">
-            <i className="fab fa-twitter"></i>
-          </a>
-          <a href="#" aria-label="Instagram">
-            <i className="fab fa-instagram"></i>
-          </a>
-          <a href="#" aria-label="YouTube">
-            <i className="fab fa-youtube"></i>
-          </a>
-          <a href="#" aria-label="Pinterest">
-            <i className="fab fa-pinterest"></i>
-          </a>
-          <a href="#" aria-label="Email">
-            <i className="far fa-envelope"></i>
+          <a 
+            href="#" 
+            className="px-4 py-2 text-white transition-colors bg-black rounded-lg hover:bg-gray-900"
+          >
+            App Store
           </a>
         </div>
-      </div>
-
-      {/* Links Section */}
-      <div className="footer-links">
-        <a href="#">Stores</a>
-        <a href="#">Elite</a>
-        <a href="#">Terms & Conditions</a>
-        <a href="#">Returns</a>
-        <a href="#">FAQs</a>
-        <a href="#">About Us</a>
-      </div>
-
-      {/* Contact Section */}
-      <div className="footer-contact">
-        <div>
-          <h4>GET IN TOUCH</h4>
-          <p>Call us at</p>
-          <p className="phone-number">1800-209-9933</p>
-          <p>Monday to Saturday: 09:00 AM - 07:00 PM</p>
-        </div>
-        <div>
-          <h4>Support</h4>
-          <p>hello@sparcle.com</p>
-        </div>
-        <div>
-          <h4>Careers</h4>
-          <p>We’re hiring!</p>
-        </div>
-        <div>
-          <h4>Press & Media</h4>
-          <p>pr@sparcle.com</p>
-        </div>
-        <div>
-          <h4>Influencer Collab</h4>
-          <p>Join Us</p>
-        </div>
-        <div>
-          <h4>Contact</h4>
-          <p>Sparkle Pvt. Ltd </p>
-          <p>Shree Sanwariya estate, 
-            main road sector-6, <br/>
-            opp Indusind Bank, <br/>
-            udaipur, 
-							   Rajasthan,313001 </p>
-                               <p>+91 9784098890</p>
-                               <p>info@sparkle.com</p>
-        </div>
-      </div>
-
-      {/* Bottom Section */}
-      <div className="footer-bottom">
-        <p>GET THE NEW sparcle APP TODAY!</p>
-        <div className="footer-app-links">
-          <a href="#">
-            <img src={playstore} alt="Google Play" />
-          </a>
-          <a href="#">
-            <img src={applestore} alt="App Store" />
-          </a>
-        </div>
-        <p>
-  Copyright &copy; {new Date().getFullYear()} All rights reserved | This template is made with{" "}
-  <i className="fa fa-heart-o" aria-hidden="true"></i> by{" "}
-  <a href="#" target="_blank">Maxwell Professional Courses</a>
-</p>
-      </div>
-    </footer>
+        
+        <p className="mt-4 text-gray-500">
+          © {new Date().getFullYear()} AKSanime. All Rights Reserved.
+        </p>
+      </motion.div>
+    </motion.footer>
   );
-}
+};
 
 export default Footer;

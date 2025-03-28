@@ -150,6 +150,7 @@ const OrderList = () => {
               <th className="px-6 py-3">Product Image</th>
               <th className="px-6 py-3">Product Title</th>
               <th className="px-6 py-3">Status</th>
+              <th className="px-6 py-3">payment Status</th>
               <th className="px-6 py-3">Change Status</th>
               <th className="px-6 py-3">Print PDF</th>
             </tr>
@@ -168,6 +169,7 @@ const OrderList = () => {
                   />
                 </td>
                 <td className="px-6 py-4">{order.product.title}</td>
+                <td className="px-6 py-4">{order.payment_status}</td>
                 <td
                   className={`px-6 py-4 font-bold ${
                     order.status === 'inprogress'

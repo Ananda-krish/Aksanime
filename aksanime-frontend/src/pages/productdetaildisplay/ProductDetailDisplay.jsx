@@ -1,5 +1,4 @@
 import DefaultLayout from "../../components/DefaultLayout/DefaultLayout";
-import LatestProducts from "../../components/LatestProducts/LatestProducts";
 import ProductDetail from "../../components/ProductDetail/ProductDetail";
 
 function ProductDetailDisplay(){
@@ -8,7 +7,7 @@ function ProductDetailDisplay(){
            <DefaultLayout>
             <ProductDetail />
 
-            <LatestProducts />
+            
             </DefaultLayout> 
         </div>
     )
