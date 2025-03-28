@@ -1,4 +1,6 @@
 FROM php:8.2-apache
+
+# Set working directory to /var/www/html
 WORKDIR /var/www/html
 
 # Install system dependencies
@@ -12,11 +14,21 @@ RUN apt-get update && apt-get install -y \
 RUN curl -sS https://getcomposer.org/installer | php -- \
     --install-dir=/usr/local/bin --filename=composer
 
-# Copy ONLY the Laravel files (from akasanime-backend)
-COPY . .
+# Copy ONLY the necessary files from akasanime-backend
+COPY composer.json composer.lock ./
+COPY database/ database/
+COPY bootstrap/ bootstrap/
+COPY config/ config/
+COPY public/ public/
+COPY resources/ resources/
+COPY routes/ routes/
+COPY app/ app/
 
-# Install dependencies
-RUN composer install
+# Install dependencies (using --ignore-platform-reqs for compatibility)
+RUN composer install --ignore-platform-reqs --no-interaction --no-scripts
+
+# Copy the rest of the application
+COPY . .
 
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html/storage \
